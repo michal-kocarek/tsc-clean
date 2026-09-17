@@ -1,0 +1,31 @@
+{
+  "badgeTemplate": "\t<a href=\"#contributors\" target=\"_blank\"><img alt=\"👪 All Contributors: <%= contributors.length %>\" src=\"https://img.shields.io/badge/%F0%9F%91%AA_all_contributors-<%= contributors.length %>-21bb42.svg\" /></a>",
+  "commitType": "docs",
+  "contributors": [
+    {
+      "login": "michal-kocarek",
+      "name": "Michal Kočárek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/762095?v=4",
+      "profile": "https://github.com/michal-kocarek",
+      "contributions": [
+        "code",
+        "content",
+        "doc",
+        "ideas",
+        "infra",
+        "maintenance",
+        "projectManagement",
+        "tool"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": true,
+  "files": [
+    "README.md"
+  ],
+  "projectName": "tsc-clean",
+  "projectOwner": "michal-kocarek",
+  "repoType": "github",
+  "commitConvention": "angular"
+}

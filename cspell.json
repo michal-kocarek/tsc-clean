@@ -1,0 +1,39 @@
+{
+	"dictionaries": ["npm", "node", "typescript"],
+	"ignorePaths": [
+		".all-contributorsrc",
+		".github",
+		".idea",
+		".junie",
+		"CHANGELOG.md",
+		"coverage",
+		"lib",
+		"node_modules",
+		"pnpm-lock.yaml"
+	],
+	"words": [
+		"brandable",
+		"cavanaugh",
+		"crestanzio",
+		"dobesv",
+		"dustoff",
+		"hookable",
+		"insidewhy",
+		"junie",
+		"kamat",
+		"kocarek",
+		"massimo",
+		"michal",
+		"neighbours",
+		"sheetal",
+		"tsbroom",
+		"tsclean",
+		"tscrub",
+		"tsprune",
+		"tsweep",
+		"typemon",
+		"upvotes",
+		"whitecolor",
+		"wireit"
+	]
+}
