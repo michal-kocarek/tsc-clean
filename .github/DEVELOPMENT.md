@@ -55,16 +55,19 @@ Note that you'll need to run `pnpm build` before `pnpm lint` so that lint rules 
 ## Testing
 
 [Vitest](https://vitest.dev) is used for tests.
-You can run it locally on the command-line:
+Run source tests directly, or build the project before running end-to-end tests against the compiled CLI:
 
 ```shell
-pnpm run test
+pnpm run test:unit
+pnpm build
+pnpm run test:e2e
 ```
 
-Add the `--coverage` flag to compute test coverage and place reports in the `coverage/` directory:
+`pnpm run test` is an alias for the source tests.
+Add the `--coverage` flag to compute source test coverage and place reports in the `coverage/` directory:
 
 ```shell
-pnpm run test --coverage
+pnpm run test:unit --coverage
 ```
 
 Note that [console-fail-test](https://github.com/JoshuaKGoldberg/console-fail-test) is enabled for all test runs.

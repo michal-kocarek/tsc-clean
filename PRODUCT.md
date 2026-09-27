@@ -66,7 +66,8 @@ The neighbours are dead or negligible, so `tsc-clean` inherits the obvious searc
 
 ### npm `description` (one line)
 
-> Remove stale build output that `tsc` leaves behind when you delete or rename source files. tsconfig-aware, safe by default.
+> Remove stale build output that `tsc` leaves behind when you delete or rename source files.
+> Tsconfig-aware: just run `tsc && tsc-clean`.
 
 ### Elevator paragraph (README intro)
 
@@ -89,13 +90,13 @@ Nothing here is dropped — it's just sequenced, so something useful ships soone
 
 ### v1 promise
 
-| #   | Feature                              | One-liner                                                                                                                                                                                                                 |
-| :-- | :----------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | **Zero-config `tsconfig` awareness** | Resolves `outDir`, `rootDir`, `declarationDir`, `include`/`exclude`/`files`, `extends`, `allowJs`, `emitDeclarationOnly`, `noEmit` — via the TypeScript API, so it agrees with `tsc` by construction.                     |
-| 2   | **Knows every emit**                 | `.ts/.tsx/.mts/.cts` (+ `.js/.jsx` with `allowJs`) → `.js/.mjs/.cjs`, `.d.ts/.d.mts/.d.cts`, `.js.map`, `.d.ts.map`.                                                                                                      |
-| 3   | **Handles incremental builds**       | Leaves `.tsbuildinfo` alone so incremental builds stay fast.                                                                                                                                                              |
-| 4   | **Safe by default**                  | Deletes only files it can prove `tsc` would have emitted from a now-missing source; never touches paths outside `outDir`; `--dry-run` shows the plan; unknown files (assets, copied JSON) are left alone unless opted in. |
-| 5   | **Tidies up after itself**           | Removes directories left empty by the cleanup.                                                                                                                                                                            |
+| #   | Feature                              | One-liner                                                                                                                                                                                                                           |
+| :-- | :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Zero-config `tsconfig` awareness** | Resolves `outDir`, `rootDir`, `declarationDir`, `include`/`exclude`/`files`, `extends`, `allowJs`, `emitDeclarationOnly`, `noEmit` — via the TypeScript API, so it agrees with `tsc` by construction.                               |
+| 2   | **Knows every emit**                 | `.ts/.tsx/.mts/.cts` (+ `.js/.jsx` with `allowJs`) → `.js/.mjs/.cjs`, `.d.ts/.d.mts/.d.cts`, `.js.map`, `.d.ts.map`.                                                                                                                |
+| 3   | **Handles incremental builds**       | Leaves `.tsbuildinfo` alone so incremental builds stay fast.                                                                                                                                                                        |
+| 4   | **Confined cleanup**                 | Treats `outDir` as TypeScript-owned: removes regular files outside the current emit set, while preserving compiler state such as `.tsbuildinfo`. Refuses unsafe output paths and source/output overlap; `--dry-run` shows the plan. |
+| 5   | **Tidies up after itself**           | Removes directories left empty by the cleanup.                                                                                                                                                                                      |
 
 ### vNEXT promise
 
@@ -107,10 +108,24 @@ Nothing here is dropped — it's just sequenced, so something useful ships soone
 | Cross-tested with different versions. |
 | 9                                     | **Fast**                           | Optimized for large codebases, huge amount of files                                                                                                                                        |
 | 10                                    | **Programmatic API**               | `clean()`, `plan()`, `watch()` for custom build scripts and plugins — exposed once the internals are stable enough to promise.                                                             |
+| 11                                    | **Explicit exclusions**            | A future `--exclude <glob>` option can protect selected paths in an otherwise TypeScript-owned `outDir`.                                                                                   |
 
 ---
 
 ## CLI Sketch
+
+`outDir` must be dedicated to TypeScript output.
+A stateless cleaner cannot tell an old compiler emit from an asset copied into the same directory: either file may be removed when it is absent from the current emit set.
+Copy assets **after** running `tsc-clean`, or keep them in another directory.
+A future `--exclude <glob>` option may support shared output directories; it is not part of v1.
+
+```json
+{
+	"scripts": {
+		"build": "tsc && tsc-clean && cp assets/* dist/assets/"
+	}
+}
+```
 
 ```sh
 tsc && tsc-clean                 # one-shot, uses ./tsconfig.json
@@ -138,7 +153,7 @@ Typical `package.json` wiring:
 
 State these up front so nobody is surprised:
 
-- **Not a `rimraf` replacement.** It never wipes `outDir` wholesale; if you want a clean slate, `rimraf` is one line away.
+- **Not a general directory cleaner.** It compares files in a TypeScript-owned `outDir` with the current emit set; it is not intended for shared output directories.
 - **Does not detect unused _source_ code.** That's the job of `knip` / `ts-prune`.
 - **Not a bundler.** If you use tsup, Vite or esbuild, they already clean up after themselves — you probably don't need this.
 
@@ -152,3 +167,13 @@ State these up front so nobody is surprised:
 - [ ] _Optional:_ publish `tsc-cleanup` as a deprecated pointer to `tsc-clean` to catch typos.
 - [ ] Add `keywords` in `package.json`: `tsc`, `typescript`, `clean`, `outDir`, `dist`, `stale`, `orphan`, `build`, `watch`.
 - [ ] Post a short note in TypeScript issue #16057 once v1 ships — that thread is where the audience already gathers.
+
+## Additional random todo:
+
+- [ ] When implementing, use node:util.parseArgs/parseEnv, if needed
+- [ ] Re security, ban traversing above current tsconfig directory by default, also ban traversing symlinks and other filesystems if that's possible.
+      Essentially limit to only process files
+- [ ] Use same logic to determine what's the absolute path from relative in tsconfig, like typescript does
+- [ ] Add conventional commits settings - IDEA, pre-commit, GitHub action
+- [ ] Make repository public
+- [ ] Publish correctly first version from github to npm directly with all bells and whistles to make it super secure

@@ -1,5 +1,7 @@
 {
+	"$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/packages/cspell-types/cspell.schema.json",
 	"dictionaries": ["npm", "node", "typescript"],
+	"language": "en",
 	"ignorePaths": [
 		".all-contributorsrc",
 		".github",

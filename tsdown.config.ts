@@ -1,8 +1,16 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/**/*.ts", "!src/**/*.test.*"],
+	attw: {
+		level: "error",
+	},
+	deps: {
+		onlyBundle: [],
+	},
+	entry: ["src/**/*.{js,ts}", "!src/**/__tests__/**"],
 	fixedExtension: false,
-	outDir: "lib",
+	publint: {
+		strict: true,
+	},
 	unbundle: true,
 });

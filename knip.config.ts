@@ -1,8 +1,7 @@
 import type { KnipConfig } from "knip";
 
 export default {
-	entry: ["src/**/*.test.*"],
-	ignoreExportsUsedInFile: { interface: true, type: true },
-	project: ["src/**/*.ts"],
+	entry: ["src/**/__tests__/*.test.*"],
+	project: ["src/**/*.ts", "!src/**/__tests__/fixtures"],
 	treatConfigHintsAsErrors: true,
 } satisfies KnipConfig;

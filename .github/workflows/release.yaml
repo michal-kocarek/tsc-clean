@@ -1,27 +1,94 @@
-concurrency:
-  group: ${{ github.workflow }}
-
-jobs:
-  release:
-    permissions:
-      contents: write
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-          token: ${{ secrets.ACCESS_TOKEN }}
-      - uses: ./.github/actions/prepare
-      - run: pnpm build
-      - env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        uses: JoshuaKGoldberg/release-it-action@v0.4.0
-
 name: Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v*
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify and pack npm package
+    if: github.repository == 'michal-kocarek/tsc-clean'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: ./.github/actions/prepare
+
+      - name: Verify tag points to a reviewed version on main
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          package_version=$(node -p "require('./package.json').version")
+          test "$RELEASE_TAG" = "v$package_version"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          git merge-base --is-ancestor HEAD origin/main
+
+      - run: pnpm exec prettier --check .
+      - run: pnpm dedupe --check
+      - run: pnpm tsc --noEmit
+      - run: pnpm run test:unit --run
+      - run: pnpm build
+      - run: pnpm run test:e2e --run
+      - run: node bin/tsc-cleaner --help
+      - run: pnpm lint
+      - run: pnpm lint:knip
+      - run: pnpm lint:spelling
+
+      - name: Pack the exact archive to stage
+        run: |
+          set -euo pipefail
+          archive=$(npm pack --ignore-scripts --silent)
+          test -f "$archive"
+          tar -tzf "$archive"
+          sha256sum "$archive" > SHA256SUMS
+          cat SHA256SUMS
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: npm-tarball
+          path: |
+            tsc-clean-*.tgz
+            SHA256SUMS
+          if-no-files-found: error
+          retention-days: 7
+
+  stage:
+    name: Stage npm package
+    needs: verify
+    runs-on: ubuntu-24.04
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: 24.19.0
+          package-manager-cache: false
+
+      - name: Install npm with staged publishing support
+        run: npm install --global npm@11.17.0 --ignore-scripts
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: npm-tarball
+
+      - name: Stage package for npm 2FA approval
+        run: |
+          set -euo pipefail
+          sha256sum --check SHA256SUMS
+          archive=$(awk 'NR == 1 { print $2 }' SHA256SUMS)
+          test -f "$archive"
+          npm stage publish "$archive" --access public --ignore-scripts

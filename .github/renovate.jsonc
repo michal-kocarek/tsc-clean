@@ -4,11 +4,11 @@
 	"extends": [
 		":preserveSemverRanges",
 		"config:best-practices",
-		"replacements:all"
+		"replacements:all",
 	],
 	"ignoreDeps": ["codecov/codecov-action"],
 	"labels": ["dependencies"],
 	"minimumReleaseAge": "7 days",
 	"patch": { "enabled": false },
-	"postUpdateOptions": ["pnpmDedupe"]
+	"postUpdateOptions": ["pnpmDedupe"],
 }

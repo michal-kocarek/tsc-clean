@@ -2,7 +2,7 @@
 
 <p align="center">
 	Remove stale build output that tsc leaves behind when you delete or rename source files.
-	Tsconfig-aware, safe by default.
+	Tsconfig-aware. Just run <code>tsc &amp;&amp; tsc-clean</code>.
 	🧹
 </p>
 
@@ -22,14 +22,24 @@
 ## Usage
 
 > [!WARNING]
-> Nothing is implemented yet.
-> This repository currently holds the product brief and the tooling scaffold only.
+> The CLI is an unreleased prototype.
+> Do not rely on it for builds yet.
+
+```sh
+tsc && tsc-clean
+```
+
+The planned cleaner treats `outDir` as dedicated to TypeScript.
+It may remove any regular file there that TypeScript would not emit from the current project, including copied assets.
+If your build copies assets into `dist`, run cleanup before the copy step (for example, `tsc && tsc-clean && cp assets/* dist/assets/`) or use a separate directory.
+An `--exclude` option may be added later.
 
 See [`PRODUCT.md`](./PRODUCT.md) for the planned CLI and feature set, and [`MARKET_RESEARCH.md`](./MARKET_RESEARCH.md) for the research behind it.
 
 ## Development
 
 See [`.github/CONTRIBUTING.md`](./.github/CONTRIBUTING.md), then [`.github/DEVELOPMENT.md`](./.github/DEVELOPMENT.md).
+For publishing, see [`RELEASING.md`](./RELEASING.md).
 Thanks! 🧹
 
 ## Contributors
@@ -51,7 +61,3 @@ Thanks! 🧹
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- spellchecker: enable -->
-
-<!-- You can remove this notice if you don't want it 🙂 no worries! -->
-
-> 💝 This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) using the [Bingo framework](https://create.bingo).

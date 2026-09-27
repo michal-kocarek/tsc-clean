@@ -1,7 +1,7 @@
 {
 	"name": "tsc-clean",
-	"version": "0.0.0",
-	"description": "Remove stale build output that tsc leaves behind when you delete or rename source files. Tsconfig-aware, safe by default. 🧹",
+	"version": "0.1.0",
+	"description": "Remove stale build output that tsc leaves behind when you delete or rename source files. Tsconfig-aware: just run tsc && tsc-clean. 🧹",
 	"keywords": [
 		"build",
 		"clean",
@@ -21,61 +21,71 @@
 	"author": {
 		"name": "michal-kocarek"
 	},
-	"sideEffects": false,
 	"type": "module",
-	"exports": {
-		".": "./lib/index.js"
-	},
-	"bin": "bin/index.js",
+	"exports": null,
+	"bin": "bin/tsc-cleaner",
 	"files": [
-		"lib/"
+		"dist/"
 	],
 	"scripts": {
 		"build": "tsdown",
-		"format": "prettier .",
+		"format": "prettier --write .",
 		"lint": "eslint . --max-warnings 0",
-		"lint:knip": "knip",
-		"lint:spelling": "cspell \"**\" \".github/**/*\"",
+		"lint:knip": "KNIP_DISABLE_RAW_TRANSFER=1 knip",
+		"lint:spelling": "cspell --quiet --color .",
 		"prepare": "husky",
-		"test": "vitest"
+		"test": "vitest --project unit",
+		"test:e2e": "vitest --project e2e",
+		"test:unit": "vitest --project unit"
 	},
 	"lint-staged": {
 		"*": "prettier --ignore-unknown --write"
 	},
 	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "4.7.2",
+		"@arethetypeswrong/core": "0.18.5",
+		"@eslint-community/eslint-plugin-eslint-comments": "4.8.1",
 		"@eslint/js": "10.0.1",
 		"@eslint/markdown": "8.0.3",
-		"@release-it/conventional-changelog": "12.0.0",
-		"@types/node": "26.2.0",
-		"@vitest/coverage-v8": "4.1.10",
+		"@release-it/conventional-changelog": "12.0.2",
+		"@tsconfig/node-lts": "24.0.1",
+		"@tsconfig/node-ts": "23.6.4",
+		"@tsconfig/strictest": "2.0.8",
+		"@types/node": "26.6.2",
+		"@vitest/coverage-v8": "5.0.1",
 		"@vitest/eslint-plugin": "1.6.27",
-		"console-fail-test": "0.6.1",
-		"cspell": "10.0.1",
-		"eslint": "10.8.1",
-		"eslint-plugin-jsdoc": "64.2.1",
-		"eslint-plugin-jsonc": "3.4.1",
+		"console-fail-test": "0.9.0",
+		"cspell": "10.3.4",
+		"eslint": "10.11.0",
+		"eslint-import-resolver-typescript": "4.4.5",
+		"eslint-plugin-import-x": "4.17.1",
+		"eslint-plugin-jsdoc": "64.5.4",
+		"eslint-plugin-jsonc": "3.4.2",
 		"eslint-plugin-n": "18.3.0",
-		"eslint-plugin-package-json": "1.7.1",
-		"eslint-plugin-perfectionist": "5.10.1",
-		"eslint-plugin-regexp": "3.2.0",
+		"eslint-plugin-package-json": "1.10.0",
+		"eslint-plugin-perfectionist": "5.12.1",
+		"eslint-plugin-regexp": "3.3.1",
 		"eslint-plugin-yml": "3.8.1",
+		"execa": "10.0.1",
 		"husky": "9.1.7",
-		"knip": "6.32.2",
-		"lint-staged": "17.3.0",
-		"prettier": "3.9.6",
+		"knip": "6.38.0",
+		"lint-staged": "17.5.1",
+		"prettier": "3.9.9",
 		"prettier-plugin-curly": "0.4.1",
 		"prettier-plugin-packagejson": "3.0.2",
-		"prettier-plugin-sentences-per-line": "0.2.4",
-		"prettier-plugin-sh": "0.19.0",
-		"release-it": "21.0.2",
-		"tsdown": "0.22.14",
-		"typescript": "5.9.3",
-		"typescript-eslint": "8.67.0",
-		"vitest": "4.1.10"
+		"prettier-plugin-sentences-per-line": "0.2.5",
+		"prettier-plugin-sh": "0.20.2",
+		"publint": "0.3.24",
+		"release-it": "21.1.0",
+		"tsdown": "0.23.0",
+		"typescript": "6.0.3",
+		"typescript-eslint": "8.70.1",
+		"vitest": "5.0.1"
 	},
-	"packageManager": "pnpm@10.4.0",
+	"peerDependencies": {
+		"typescript": ">=6.0.0"
+	},
+	"packageManager": "pnpm@12.6.0",
 	"engines": {
-		"node": ">=20.19.0"
+		"node": ">=24.0.0"
 	}
 }

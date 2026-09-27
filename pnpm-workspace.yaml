@@ -1,0 +1,13 @@
+allowBuilds:
+  unrs-resolver: false
+
+hoist: false
+
+minimumReleaseAge: 1440
+
+trustPolicy: no-downgrade
+
+trustPolicyExclude:
+  - semver@6.3.1
+
+trustPolicyExcludePrune: true
