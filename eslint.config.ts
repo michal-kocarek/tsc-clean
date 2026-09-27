@@ -18,7 +18,7 @@ import { configs as tsEslintConfigs } from "typescript-eslint";
 const TEST_FILES_GLOB = "**/__tests__/**.{js,ts}";
 const CONFIG_FILES_GLOB = "*.config.{js,ts}";
 const TSCONFIG_GLOB = "**/tsconfig*.json";
-const PRODUCTION_CODE_GLOB = ["**/*.{js,ts}", "bin/*"];
+const ALL_CODE_GLOB = ["**/*.{js,ts}", "bin/*"];
 
 export default defineConfig(
 	includeIgnoreFile(fileURLToPath(new URL(".gitignore", import.meta.url)), {
@@ -57,11 +57,11 @@ export default defineConfig(
 			importX.flatConfigs.recommended,
 			importX.flatConfigs.typescript,
 		],
-		files: [...PRODUCTION_CODE_GLOB],
+		files: [...ALL_CODE_GLOB],
 		languageOptions: {
 			parserOptions: {
 				projectService: {
-					allowDefaultProject: [CONFIG_FILES_GLOB, "bin/*"],
+					allowDefaultProject: [],
 				},
 			},
 		},
@@ -99,7 +99,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [...PRODUCTION_CODE_GLOB],
+		files: [...ALL_CODE_GLOB],
 		ignores: ["**/__tests__/**"],
 		name: "Non-dev source code",
 		rules: {

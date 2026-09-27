@@ -21,6 +21,7 @@
 	"author": {
 		"name": "michal-kocarek"
 	},
+	"sideEffects": false,
 	"type": "module",
 	"exports": null,
 	"bin": "bin/tsc-cleaner",
