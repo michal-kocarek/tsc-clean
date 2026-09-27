@@ -11,9 +11,5 @@ OPTIONS
   --dryRun               Do not delete any files.
   --verbose              Print verbose output.
   --version              Print version.
-  --help, -h             Print this message.
-
-EXAMPLES
-  tsc && tsc-clean
-  tsc-clean -p tsconfig.build.json --dryRun"
+  --help, -h             Print this message."
 `;

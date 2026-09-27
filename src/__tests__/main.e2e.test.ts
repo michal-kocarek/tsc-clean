@@ -2,14 +2,18 @@ import { execa } from "execa";
 import { stripVTControlCharacters } from "node:util";
 import { describe, it } from "vitest";
 
-const binPath = import.meta.resolve("../../bin/tsc-cleaner");
+const binPath = require.resolve("../../bin/tsc-cleaner");
 
-async function runTscCleaner(args: string[]) {
+async function runTscCleaner(
+	args: string[],
+	opts: { allowFailure: boolean } = { allowFailure: false },
+) {
 	const result = await execa(binPath, args, {
 		env: {
 			FORCE_COLOR: undefined,
 			NO_COLOR: "1",
 		},
+		reject: !opts.allowFailure,
 	});
 
 	result.stdout = stripVTControlCharacters(result.stdout);
@@ -40,10 +44,12 @@ describe("tsc-cleaner", () => {
 	it("should fail nicely when called with unknown argument", async ({
 		expect,
 	}) => {
-		const result = await runTscCleaner(["--unknown"]);
+		const result = await runTscCleaner(["--unknown"], {
+			allowFailure: true,
+		});
 
 		expect(result.exitCode).toBe(1);
-		expect(result.stderr).toBe("");
+		expect(result.stderr).toBe("error: Unknown option '--unknown'.");
 		expect(result.stdout).toBe("");
 	});
 });

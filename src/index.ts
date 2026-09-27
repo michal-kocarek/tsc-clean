@@ -366,6 +366,7 @@ function print(...messages: string[]) {
 function printError(...messages: string[]): void {
 	// eslint-disable-next-line no-console
 	console.error(styleText("red", `error: ${messages.join(" ")}`));
+	process.exitCode = 1;
 }
 
 main();
