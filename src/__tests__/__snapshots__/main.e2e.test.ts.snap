@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tsc-cleaner > should print help 1`] = `
+"tsc-clean - Remove stale TypeScript build output
+
+USAGE
+  tsc-clean [options]
+
+OPTIONS
+  --project, -p <path>   Path to configuration file for this project, or to a folder with a 'tsconfig.json'.
+  --dryRun               Do not delete any files.
+  --verbose              Print verbose output.
+  --version              Print version.
+  --help, -h             Print this message.
+
+EXAMPLES
+  tsc && tsc-clean
+  tsc-clean -p tsconfig.build.json --dryRun"
+`;
